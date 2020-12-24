@@ -15,7 +15,7 @@ async def on_ready():
 
 @client.event
 async def on_message_delete(message):
-    print("saw that delete")
+    pass
 
 
 @client.event
@@ -23,13 +23,13 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    if message.content.startswith(r'%'):
-        await handle_msg_recv(message)
+    print(f"message from {message.author.name} in {message.channel} contents {message.content}")
+
+    await handle_msg_recv(message)
 
 
 @client.event
 async def on_reaction_add(reaction, user):
-    print("saw that reaction")
-    await reaction.message.channel.send('saw that')
+    pass
 
 client.run(os.getenv("DISCORD_BOT_TOKEN"))
