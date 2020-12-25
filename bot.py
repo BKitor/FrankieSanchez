@@ -1,8 +1,8 @@
-#!/home/bkitor/Projects/FrankieSanchez/venv/bin/python
+#!/home/bkitor/Documents/Projects/FrankieSanchez/venv/bin/python
 import os
 import discord
 from dotenv import load_dotenv
-from messages import handle_msg_recv
+from events.messages import handle_msg_recv
 load_dotenv()
 
 client = discord.Client()

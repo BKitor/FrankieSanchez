@@ -1,0 +1,12 @@
+[Unit]
+Description=FrankieSanchez Discord Bot
+
+[Service]
+Type=Simple
+Restart=always
+RestartSec=1
+User=bkitor
+ExecStart=/home/bkitor/Documents/Projects/FrankieSanchez/venv/bin/python /home/bkitor/Documents/Projects/FrankieSanchez/bot.py
+
+[Install]
+WantedBy=multi-user.target
