@@ -5,8 +5,9 @@ from dotenv import load_dotenv
 from events.messages import handle_msg_recv
 load_dotenv()
 
-client = discord.Client()
+main_channel = "the-chitty-chat" if not os.getenv("BOT_DEBUG") else "tst_gnrl"
 
+client = discord.Client()
 
 @client.event
 async def on_ready():
@@ -25,7 +26,7 @@ async def on_message(message):
 
     print(f"message from {message.author.name} in {message.channel} contents {message.content}")
 
-    await handle_msg_recv(message)
+    await handle_msg_recv(message, main_channel)
 
 
 @client.event

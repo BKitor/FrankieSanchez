@@ -31,6 +31,15 @@ async def whos_a_good_boy(msg):
     await msg.channel.send(response)
 
 
-async def handle_msg_recv(msg):
-    if await validate_message(msg, channel="the-chitty-chat", prefix="$"):
-        await whos_a_good_boy(msg)
+async def pong(msg):
+    delete_after = 2
+    await msg.channel.send("pong", delete_after=delete_after)
+    await msg.delete(delay=delete_after)
+
+
+async def handle_msg_recv(msg, channel):
+    if await validate_message(msg, channel=channel, prefix="$"):
+        if "ping" in msg.content:
+            await pong(msg)
+        else:
+            await whos_a_good_boy(msg)
