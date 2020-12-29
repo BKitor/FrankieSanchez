@@ -1,11 +1,10 @@
-#!/home/bkitor/Documents/Projects/FrankieSanchez/venv/bin/python
 import os
 import discord
 from dotenv import load_dotenv
 from events.messages import handle_msg_recv
 load_dotenv()
 
-main_channel = "the-chitty-chat" if not os.getenv("BOT_DEBUG") else "tst_gnrl"
+main_channel = "the-chitty-chat" if not os.getenv("BOT_DEBUG") else "kito-secret-test-site"
 
 client = discord.Client()
 

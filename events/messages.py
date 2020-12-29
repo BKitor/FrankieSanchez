@@ -1,4 +1,5 @@
 from fuzzywuzzy import fuzz
+from emojis import emojis
 # pass in a message and params to be checked, if params apply, ture is returnd, else false
 # TODO: only a single string for now, might want to expand to a list or somethig
 
@@ -37,9 +38,17 @@ async def pong(msg):
     await msg.delete(delay=delete_after)
 
 
+async def andrew_party(msg):
+    if await validate_message(msg, prefix='$andrew party'):
+        for k in emojis:
+            await msg.add_reaction(emojis[k])
+        await msg.channel.send("<@&788493761373667430>"+emojis["ANDREW_HAHA"]+emojis["LONGO"]+emojis["ANDREW_CONCENTRATE"]+emojis["ANDREW_FRANCH"]+emojis["ANDREW_SAD"])
+
+
 async def handle_msg_recv(msg, channel):
     if await validate_message(msg, channel=channel, prefix="$"):
         if "ping" in msg.content:
             await pong(msg)
         else:
             await whos_a_good_boy(msg)
+            await andrew_party(msg)
