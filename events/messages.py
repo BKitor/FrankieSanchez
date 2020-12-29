@@ -1,7 +1,10 @@
+import random
 from fuzzywuzzy import fuzz
-from emojis import emojis
+from ServerMetadata import ServerMetadata
 # pass in a message and params to be checked, if params apply, ture is returnd, else false
 # TODO: only a single string for now, might want to expand to a list or somethig
+
+s_m = ServerMetadata()
 
 
 async def validate_message(msg, channel=None, prefix=None, author=None):
@@ -39,16 +42,70 @@ async def pong(msg):
 
 
 async def andrew_party(msg):
+    a_emojis = s_m.get_andrew_emojis()
+    msg_str = f"<@&{s_m.andew_longo_id}>"
     if await validate_message(msg, prefix='$andrew party'):
-        for k in emojis:
-            await msg.add_reaction(emojis[k])
-        await msg.channel.send("<@&788493761373667430>"+emojis["ANDREW_HAHA"]+emojis["LONGO"]+emojis["ANDREW_CONCENTRATE"]+emojis["ANDREW_FRANCH"]+emojis["ANDREW_SAD"])
+        for k in a_emojis:
+            await msg.add_reaction(a_emojis[k])
+            msg_str += a_emojis[k]
+        await msg.channel.send(msg_str)
+
+
+async def party(msg):
+    m = msg.content.lower()
+
+    out_msg = ""
+    emojis = {}
+
+    if "everyone" in m:
+        out_msg += "@everyone"
+        emojis.update(s_m.emojis)
+
+    if "adrian" in m:
+        out_msg += f"<@&{s_m.deadlift_daddy_id}>"
+        emojis.update(s_m.get_adrian_emojis())
+    if "andrew" in m:
+        out_msg += f"<@&{s_m.andew_longo_id}>"
+        emojis.update(s_m.get_andrew_emojis())
+    if "dom" in m:
+        out_msg += f"<@&{s_m.pro_brody_lover_id}>"
+        emojis.update(s_m.get_dom_emojis())
+    if "jessica" in m:
+        out_msg += f"<@&{s_m.board_game_master_id}>"
+        emojis.update(s_m.get_jessica_emojis())
+    if "kito" in m:
+        out_msg += f"<@&{s_m.kito_hacker_man_id}>"
+        emojis.update(s_m.get_kito_emojis())
+    if "lina" in m:
+        out_msg += f"<@&{s_m.little_smarty_pants_id}>"
+        emojis.update(s_m.get_lina_emojis())
+    if "lydia" in m:
+        out_msg += f"<@&{s_m.power_dork_id}>"
+        emojis.update(s_m.get_lydia_emojis())
+    if "mel" in m:
+        out_msg += f"<@&{s_m.hamster_mom_id}>"
+        emojis.update(s_m.get_mel_emojis())
+    if "sally" in m:
+        out_msg += f"<@&{s_m.sally_damn_id}>"
+        emojis.update(s_m.get_sally_emojis())
+
+    while len(emojis) > 20:
+        emojis.pop(random.choice(list(emojis.keys())))
+
+    emojis_l = list(emojis.values())
+    random.shuffle(emojis_l)
+
+    for e in emojis_l:
+        await msg.add_reaction(e)
+        out_msg += e
+    await msg.channel.send(out_msg)
 
 
 async def handle_msg_recv(msg, channel):
     if await validate_message(msg, channel=channel, prefix="$"):
         if "ping" in msg.content:
             await pong(msg)
+        elif "party" in msg.content:
+            await party(msg)
         else:
             await whos_a_good_boy(msg)
-            await andrew_party(msg)
