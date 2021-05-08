@@ -12,6 +12,5 @@ multidict==4.7.6
 pycodestyle==2.6.0
 pyflakes==2.2.0
 python-dotenv==0.15.0
-python-Levenshtein==0.12.0
 toml==0.10.2
 yarl==1.5.1
