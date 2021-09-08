@@ -1,4 +1,4 @@
-#Cpt.Prof.Frankie Sanchez
+# Cpt.Prof.Frankie Sanchez
 
 A discord bot for a private server
 Built with discord.py
