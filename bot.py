@@ -4,7 +4,13 @@ from dotenv import load_dotenv
 from events.messages import handle_msg_recv
 load_dotenv()
 
-main_channel = "the-chitty-chat" if not os.getenv("BOT_DEBUG") else "kito-secret-test-site"
+# main_channel = "the-chitty-chat" if not os.getenv("BOT_DEBUG") else "kito-secret-test-site"
+main_channel = os.getenv("BOT_CHANNEL")
+if main_channel is None:
+    print("No channel specified exiting")
+    exit()
+print(f"BOT_CHANNEL: {os.getenv('BOT_CHANNEL')}")
+
 
 client = discord.Client()
 

@@ -1,6 +1,12 @@
 import random
+import requests
+import re
+import json
+import matplotlib.pyplot as plt
 from fuzzywuzzy import fuzz
 from ServerMetadata import ServerMetadata
+import discord
+
 # pass in a message and params to be checked, if params apply, ture is returnd, else false
 # TODO: only a single string for now, might want to expand to a list or somethig
 
@@ -100,6 +106,63 @@ async def party(msg):
         out_msg += e
     await msg.channel.send(out_msg)
 
+async def covid_report(msg):
+    url = 'https://data.ontario.ca/api/3/action/datastore_search?'
+
+    filters = {
+        "Outcome1": "Not Resolved"
+    }
+
+    c = re.compile(r"city:(\w+)")
+    m = c.search(msg.content)
+    report_loc = "Ontario"
+
+    if m:
+        city = m.group(1).title()
+        filters["Reporting_PHU_City"]= city
+        report_loc = city
+
+    params = {
+        'resource_id': '455fd63b-603d-4608-8216-7d8647f43350',
+        'filters': json.dumps(filters),
+        'limit':50000
+    }
+    res = requests.get(url, params)
+
+    out_dir = {}
+    records = res.json()['result']['records']
+    num_cases = len(records)
+    for r in records:
+        if r["Age_Group"] == "UNKNOWN":
+            continue;
+        if r["Age_Group"] not in out_dir:
+            out_dir[r["Age_Group"]] = 1
+        else:
+            out_dir[r["Age_Group"]] += 1
+
+    if len(out_dir) == 0:
+        await msg.channel.send(f"No active cases in {report_loc}")
+        return
+
+    l = list(out_dir.items()) 
+    l.sort(key=lambda x : x[0])
+    if l[-1][0].startswith("<"):
+        l.insert(0, l.pop())
+
+    x_axis = [x[0] for x in l]
+    y_axis = [y[1] for y in l]
+
+    plot_file_name = "vid_report_plot.png"
+
+    plt.bar(x_axis, y_axis)
+    plt.title(f"Covid report {report_loc}, total {num_cases}")
+    plt.xlabel("Age Group")
+    plt.ylabel("Num Active Cases")
+    plt.savefig(plot_file_name)
+    plt.clf()
+
+    await msg.channel.send(file=discord.File(plot_file_name))
+
 
 async def handle_msg_recv(msg, channel):
     if await validate_message(msg, channel=channel, prefix="$"):
@@ -107,5 +170,7 @@ async def handle_msg_recv(msg, channel):
             await pong(msg)
         elif "party" in msg.content:
             await party(msg)
+        elif "report" in msg.content:
+            await covid_report(msg)
         else:
             await whos_a_good_boy(msg)
